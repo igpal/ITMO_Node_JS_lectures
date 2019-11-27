@@ -1,151 +1,178 @@
-let str = "ttertretert",
-    srt1 = 'dgfdgererer',
-    str2 = `werwer${str}twer`;
-
-let str3 = "a";
-str3 += "b";
-
-console.log(str3.toLocaleUpperCase());
-console.log(str3.toLocaleLowerCase());
-
-console.log(str3.startsWith("a"));
-console.log(str3.endsWith("b"));
-
-console.log(str3.repeat(4));
-console.log(str3.includes("b"));
-
-let str4 = "9999";
-console.log(str4.padStart(6, "0"));
-console.log(str4.padEnd(6, "0"));
-
-let str5 = str4.padEnd(20, "hello");
-console.log(str5.substr(4, 2));
-console.log(str5.substring(4, 6));
-console.log(str5.slice(4, 2));
-console.log(str5.charCodeAt(0));
-console.log(String.fromCharCode(57));
-
-////////////////////////////////////////////////////////////////////////
-//Регулярные выражения
-let str6 = "Я люблю JavaScript!!!";
-let regExp = new RegExp("лю", "");
-let result = str6.search(regExp);
-console.log(result);
-
-regExp = /Лю/i; // i - убирает чувствительность к регистру
-str6 = "Ой-ой-ой";
-regExp = /ой/ig // g - все вхождения;
-console.log(str6.match(regExp));
-str6 = "asad";
-console.log(str6.replace(/a/ig, "b"));
-
-str6 = "Привет мир!!!!";
-regExp = /мир/i;
-console.log(regExp.test(str6));
-
-str6 = "Ой-ой-ой";
-regExp = /ой/ig;
-/*console.log(regExp.exec(str6));
-console.log(regExp.exec(str6));
-console.log(regExp.exec(str6));
-console.log(regExp.exec(str6));
-console.log(regExp.exec(str6));
-*/
-let r;
-while (r = regExp.exec(str6)) {
-    console.log(`${r.index} ${r[0]}`);
-
+// Анонимные функции - функциональное выражение
+let subNums = function(a, b) {
+    return a - b;
 }
 
-str6 = "";
-regExp = /CS.4/s // . любой символ, кроме \n // s - включает учет переноса строки
+console.log(subNums(10, 25));
 
-console.log("CSS4".match(regExp));
-console.log("CS-4".match(regExp));
-console.log("CS 4".match(regExp));
-console.log("CS\n4".match(regExp));
+! function(a, b) {
+    console.log(a - b);
+}(7, 5);
 
 
-// ДИАПОЗОНЫ
-str6 = "Жили были";
-regExp = /[жб][иы]ли/ig;
-console.log(str6.match(regExp));
+// Стрелочные функции =>
+subNums = (a, b) => a - b;
+console.log(subNums(10, 25));
 
-str6 = "Саша + Маша так же как Даша + Паша";
-regExp = /[А-Я]аша/ig;
-console.log(str6.match(regExp));
+function delay(cb) {
+    setTimeout(() => {
+        cb();
+    }, 2000)
+}
+delay(() => {
+    console.log("Текст через 2 секунды");
+})
 
-str6 = "Этот компьютер нам обошелся в 10000 рублей.";
-regExp = /[^А-Я .]/ig; // [^] - Исключает
-console.log(str6.match(regExp));
+// Объекты
+let obj = new Object(),
+    obj2 = {},
+    num = 123;
 
-str6 = "My name is Alex";
-regExp = /\w\w\s\w\w\w\w/ig // \w - английский алфавит, цифры, подчернкивания \s - знаки препинания, перненосы
-console.log(str6.match(regExp));
+let article = {
+    id: 1,
+    tittle: 'Фотография',
+    author: 'Peter',
+    descreption: 'Описание статьи',
+    " ": "qwerty",
+    null: null,
+    true: true,
+    [1 + 2]: 3,
+    num
 
-regExp = /\b\w\w\b/ig; // \b - граница слова
-console.log(str6.match(regExp));
+};
+console.log(article);
+console.log(article.author);
+console.log(article.id);
+console.log(article.tittle);
+console.log(article.descreption);
+console.log(article[" "]);
+console.log(article[null]);
+console.log(article.true);
+console.log(article[3]);
+console.log(article.num);
 
-regExp = /\w\w/ig;
-console.log(str6.match(regExp));
+article.img = "/img.jpg";
+console.log(article.img);
+article.img = "/img2.jpg";
 
-str6 = "MEVN стек включает: HTML,CSS, JS";
-regExp = /(HTML|CSS|JS)/ig;
-console.log(str6.match(regExp));
+delete article.img;
+console.log(article);
 
-str6 = "100500 попугаев съели 500100 бананов";
-regExp = /\d/ig; // \d - цифры
-console.log(str6.match(regExp));
+console.log("img" in article); // есть ли свойство
+console.log("num" in article);
 
-// \Заглавная буква - Исключение.
+console.log(article.hasOwnProperty("tittle")); // есть ли свойство
 
-//Квантификаторы
-// + {1,}
-str6 = "100500 попугаев съели 500100 бананов";
-regExp = /\d+/ig; // {} - от 1 до сколь угодно раз
-console.log(str6.match(regExp));
+for (let key in article) {
+    console.log(key + " " + article[key]);
+}
 
-str6 = "100500 попугаев съели 500100 бананов";
-regExp = /^\d+/ig; // ^ - Начало предложения
-console.log(str6.match(regExp));
+let arr = [1, 2, 3, 4, 5, 6];
+for (let key in arr) { // ЦИКЛ FOR IN
+    console.log(key + " " + arr[key]);
+}
 
-str6 = "100500 попугаев съели 500100 бананов";
-regExp = /\D+$/ig; // $ - конец предложения
-console.log(str6.match(regExp));
+console.log(Object.keys(article).includes("author")); // свойства
+console.log(Object.entries(article)); //ключ значение
+console.log(Object.values(article)); // значения
 
-str6 = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. \nUt wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.";
-regExp = /^\w+/img; - // m - многострочный режим для абзацов
-console.log(str6.match(regExp));
+let articles = [{
+        id: 1,
+        title: "JS",
+        description: "qwertrererte",
+        author: "Mike"
+    },
+    {
+        id: 2,
+        title: "PHP",
+        description: "sarfsrfssf",
+        author: "Jhon"
+    },
+    {
+        id: 3,
+        title: "HTML",
+        description: "qwe12344rtrererte",
+        author: "Mike"
+    }
+];
 
-//Квантификатор *
-str6 = "100 10 1";
-regExp = /10*/ig; // - * от нуля и более раз
-console.log(str6.match(regExp));
+console.log(getData(articles, "author", "Mike"));
 
-//Квантификатор ?
-str6 = "Привет. Приветик";
-regExp = /[а-яё] {6} (ик)?/ig; // ? - ноль или один раз
-console.log(str6.match(regExp));
+function getData(arr, propName, propValue) {
+    let arrRes = [];
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i][propName] === propValue) {
+            arrRes.push(arr[i]);
+        }
+    }
+    return arrRes;
+}
 
-str6 = "Я взрослый (18+)!";
-regExp = /\(\d+\+\)/ig;
-console.log(str6.match(regExp));
 
-// проверка телефонного номера вида
-// 7 (921) 911-51-97
-str6 = "7 (921) 911-51-97";
-regExp = /7 \(\d{3}\) \d{3}-\d{2}-\d{2}/ig;
-console.log(regExp.test(str6));
+//Деструктаризация ES6
+let userData = ["root", "123", 56, "Peter"];
 
-//Валидация почты itmo@info.ru
-str6 = "itmo@info.ru";
-regExp = /(\w+\.?)(@\w+\.)+\w+/;
-console.log(regExp.test(str6));
+let [login, pass, age, name] = userData;
+let [login1, pass1, age1, ...other] = userData; // Если не известно сколько элементов в массиве
+console.log(other);
 
-str6 = '"Ведьма" и её "метла" одно целое';
-regExp = /".+"/ig; // - жадный режим
-console.log(str6.match(regExp));
+let { id, title, description, author } = articles[0]; // Деструктаризация Объекта
+console.log(id);
+console.log(title);
+console.log(description);
+console.log(author);
 
-str6 = '"Ведьма" и её "метла" одно целое';
-regExp = /".+?"/ig; // - одно совпадение
-console.log(str6.match(regExp));
+/*let { id, title: xxx, description, author } = articles[0]; // :xxx Замена имени свойства, с сохранением значения
+console.log(id);
+console.log(xxx);
+console.log(description);
+console.log(author);
+*/
+function someF({ id, title, description }) {
+    console.log(id);
+    console.log(title);
+    console.log(description);
+}
+someF(articles[0]);
+
+
+
+let obj1 = {
+    a1: 1,
+    b2: 2,
+    c: {
+        d: 2,
+        e: 3
+    }
+}
+
+let { a, b2, c: { d, e: f } } = obj1;
+console.log(a);
+console.log(b2);
+console.log(d);
+console.log(f);
+
+/*let menu {
+    items: [{
+            label: "О нас",
+            href: "/about.html",
+            items: [{
+                label: "Контакты",
+                href: "/about.html"
+            }, {
+                label: "Продукты",
+                href: "/produkt.html"
+            }]
+        },
+
+    ]
+}
+*/
+
+let x1 = 23,
+    x2 = 32;
+console.log(x1);
+console.log(x2);
+[x2, x1] = [x1, x2];
+console.log(x1);
+console.log(x2);
