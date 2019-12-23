@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="a++">+{{a}}</button>
+        <button @click="b++">+{{b}}</button>
+        <div>Площадь: {{ area }}</div>
+    </div>
+
+    <div id="app2">
+        <p v-if="visible">Первый параграф</p>
+        <p v-else>Второй параграф</p>
+
+        <div v-show='visible'>
+            <h1>Заголовок</h1>
+            <p>Текст</p>
+        </div>
+        <button v-on:click="visible=!visible">
+            {{ visible ? 'К параграфу 2' : 'К параграфу 1' }}
+        </button>
+    </div>
+
+    <div id="app3">
+        <div v-on:contextmenu.prevent='onHelp'>
+            <span>Вызови на мне контекстное меню</span>
+            <span v-show="a">Справочная информация</span>
+            <a v-show="a" href="#" v-on:click.prevent="a=false">Скрыть</a>
+        </div>
+    </div>
+    <script>
+        let app = new Vue({
+            el: '#app',
+            data: {
+                a: 5,
+                b: 3
+            },
+            computed: {
+                area() {
+                    return this.a * this.b;
+                }
+            },
+            watch: {
+                a: function(newVal, oldVal) {
+                    console.log('a:', newVal, oldVal);
+                },
+                b(newVal, oldVal) {
+                    console.log('b:', newVal, oldVal);
+                },
+                area: function(newVal, oldVal) {
+                    console.log('area:', newVal, oldVal);
+                },
+            }
+        });
+
+        let app2 = new Vue({
+            el: '#app2',
+            data: {
+                visible: true
+            }
+        });
+
+        let app3 = new Vue({
+            el: '#app3',
+            data: {
+                a: false
+            },
+            methods: {
+                onHelp() {
+                    this.a = true;
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
