@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .tab-button-active {
+            color: orange;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <hello></hello>
+        <section-header></section-header>
+        <section-content></section-content>
+        <section-footer></section-footer>
+        <p>=================================================================================================================================</p>
+        <table>
+            <tr is="blog-post-row"></tr>
+        </table>
+        <p>=================================================================================================================================</p>
+        <button v-for='tab in tabs' @click='currentTab = tab' class='tab-class' v-bind:class="{'tab-button-active': tab === currentTab }">
+            {{tab}}
+        </button>
+        <component :is='currentTabComponent'></component>
+        <p>=================================================================================================================================</p>
+        <table>
+            <tr is="first-row"></tr>
+            <tr is="second-row"></tr>
+            <tr is="third-row"></tr>
+        </table>
+        <p>=================================================================================================================================</p>
+        <counter></counter>
+        <counter></counter>
+        <p>=================================================================================================================================</p>
+        <message-box message="hello"></message-box>
+        <message-box message="hello2"></message-box>
+        <message-box message="hello3"></message-box>
+        <p>=================================================================================================================================</p>
+        <input type="text" v-model='welcome'>
+        <message-box2 :message="welcome"></message-box2>
+        <p>=================================================================================================================================</p>
+        <input type="text" v-model='user.name'>
+        <input type="text" v-model='user.age'>
+        <userinfo v-bind="user"></userinfo>
+        <p>=================================================================================================================================</p>
+        <userlist :users="users"></userlist>
+        <p>=================================================================================================================================</p>
+        <userlist2 :users="users"></userlist2>
+        <p>=================================================================================================================================</p>
+
+        <h2>Hello, {{name}}</h2>
+        <useredit :user="name" @userchange="change"></useredit>
+        <button @click="resetName">Reset</button>
+        <p>=================================================================================================================================</p>
+        <h2>Список пользователей</h2>
+        <userform :addfn="add"></userform>
+        <userinfo2 v-for="(user, index) in users" :key="index" :index="index" :user="user" :removefn="remove"></userinfo2>
+        <p>=================================================================================================================================</p>
+        <userred :user="usr"></userred>
+        <userprint :user="usr"></userprint:user="user">
+    </div>
+
+    <script>
+        let eventBus = new Vue();
+        Vue.component('hello', {
+            template: '<H2>Hello</H2>'
+        });
+        Vue.component('section-header', {
+            template: '<H2>header</H2>'
+        });
+        Vue.component('blog-post-row', {
+            template: '<tr><td>Cell1</td><td>Cell2</td></tr>'
+        });
+
+        Vue.component('tab-home', {
+            template: '<div>Home</div>'
+        });
+
+        Vue.component('tab-post', {
+            template: '<div>Post</div>'
+        });
+        Vue.component('tab-archive', {
+            template: '<div>Archive</div>'
+        });
+        Vue.component('counter', {
+            data: function() {
+                return {
+                    header: 'Counter programm',
+                    count: 0
+                }
+            },
+            template: `<div><h2>{{header}}</h2>
+                <button @click="increase">+</button>
+                <span>{{count}}</span></div>`,
+            methods: {
+                increase() {
+                    this.count++;
+                }
+            }
+        });
+        Vue.component('message-box', {
+            props: ['message'],
+            data: function() {
+                return {
+
+                };
+            },
+            template: `<h2>{{message}}</h2>`
+        });
+        Vue.component('message-box2', {
+            props: ['message'],
+            template: `<h2>{{message}}</h2>`
+        });
+
+        Vue.component('userinfo', {
+            props: {
+                'name': {
+                    type: String,
+                    required: true,
+                    default: 'Tom'
+                },
+                'age': {
+                    type: Number,
+                    required: true,
+                    validator(val) {
+                        return val > 0 && val < 1000;
+                    }
+                }
+            },
+            template: `<div>
+                <h2>{{name}}</h2>
+                <h2>{{age}}</h2>
+            </div>`
+        });
+
+        Vue.component('userlist', {
+            props: {
+                'users': {
+                    type: Array,
+                    default: function() {
+                        return []
+                    }
+                }
+            },
+            template: `<ul>
+                <li v-for="user in users">
+                    <p>{{user.name}}</p>
+                    <p>{{user.age}}</p>
+                </li>
+            </ul>`
+        });
+
+        Vue.component('userdetails', {
+            props: ["user"],
+            template: `<div>
+                    <p>{{user.name}}</p>
+                    <p>{{user.age}}</p>
+                </div>`
+        });
+
+        Vue.component('userlist2', {
+            props: {
+                'users': {
+                    type: Array,
+                    default: function() {
+                        return []
+                    }
+                }
+            },
+            template: `<div>
+                <userdetails 
+                    v-for="user in users":key="user.name"
+                    :user = "user"
+                >
+                </userdetails>
+            </div>`
+        });
+
+        Vue.component('useredit', {
+            props: ['user'],
+            template: `<div>
+                <input type="text" 
+                    v-bind:value="user" 
+                    @input="onUserChange"
+                >
+                <p>Name: {{user}}</p>
+            </div>`,
+            methods: {
+                onUserChange(e) {
+                    this.$emit('userchange', e.target.value);
+                }
+            }
+        });
+
+
+        Vue.component('userinfo2', {
+            props: ['index', 'user', 'removefn'],
+            template: `<div>
+                <p>{{user.name}}</p>
+                <p>{{user.age}}</p>
+                <button @click="removefn(index)">Delete</button>
+            </div>`
+        });
+
+        Vue.component('userform', {
+            props: ['addfn'],
+            data: function() {
+                return {
+                    name: '',
+                    age: 0
+                }
+            },
+            template: `<div>
+                <input type="text" v-model="name">
+                <input type="number" v-model="age">
+                <button @click="addfn({name, age})">Add</button>
+            </div>`
+        });
+
+        Vue.component('userred', {
+            props: ['user'],
+            data: function() {
+                return {
+                    userName: this.user
+                }
+            },
+            template: `<div>
+                <input type="text" v-model="userName">
+                <button @click="save">Save</button>
+            </div>`,
+            methods: {
+                save() {
+                    eventBus.$emit('userchange', this.userName);
+                }
+            }
+
+        });
+        Vue.component('userprint', {
+            props: ['user'],
+            data: function() {
+                return {
+                    userName: this.user
+                }
+            },
+            template: `<div>
+                <p>{{userName}}</p>
+            </div>`,
+            created() {
+                eventBus.$on('userchange', (val) => {
+                    this.userName = val;
+                });
+            }
+
+
+        });
+        let content1 = {
+            template: '<div>Content 1</div>'
+        };
+
+        let footer1 = {
+            template: '<div>Footer 1</div>'
+        };
+
+
+
+        let app = new Vue({
+            el: "#app",
+            data: {
+                tabs: ['home', 'post', 'archive'],
+                currentTab: 'home',
+                welcome: 'hello man',
+                user: {
+                    name: 'Petr',
+                    age: 18
+                },
+                users: [{
+                    name: 'Tom',
+                    age: 18
+                }, {
+                    name: 'Sasha',
+                    age: 21
+                }],
+                name: 'Tom',
+                usr: 'Sasha'
+
+            },
+            computed: {
+                currentTabComponent() {
+                    return 'tab-' + this.currentTab;
+                }
+            },
+            methods: {
+                resetName() {
+                    this.name = 'Bob';
+                },
+                change(name) {
+                    this.name = name;
+                },
+                remove(index) {
+                    this.users.splice(index, 1);
+                },
+                add(user) {
+                    this.users.push(user);
+                }
+            },
+            components: {
+                'section-content': content1,
+                'section-footer': footer1,
+                'firstRow': {
+                    template: '<tr><td>Cell1</td></tr>'
+                },
+                'SecondRow': {
+                    template: '<tr><td>Cell2</td></tr>'
+                },
+                'third-row': {
+                    template: '<tr><td>Cell3</td></tr>'
+                },
+
+            }
+
+        });
+    </script>
+</body>
+
+</html>

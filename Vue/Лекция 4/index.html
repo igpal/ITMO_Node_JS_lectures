@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .region {
+            background-color: #999;
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+            margin: 10px;
+        }
+        
+        .active {
+            background-color: red;
+        }
+        
+        .bounded {
+            border: 2px solid green;
+        }
+        
+        .yellow {
+            background-color: yellow;
+        }
+        
+        .blue {
+            background-color: blue;
+        }
+        
+        .green {
+            background-color: green;
+        }
+        
+        .big {
+            width: 125px;
+            height: 125px;
+        }
+        
+        .small {
+            width: 75px;
+            height: 75px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="region" v-bind:class="classObj"></div>
+        <button @click="isActive=!isActive">Toogle color</button>
+        <button @click="isBounded=!isBounded">Toogle border</button>
+        <div class="region"></div>
+
+        <br>
+        <p>--------------------------------------------------------------------------------------------------------------------</p>
+        <div class="region" v-bind:class="color"></div>
+        <input type="text" v-model="color">
+
+        <br>
+        <p>--------------------------------------------------------------------------------------------------------------------</p>
+        <div class="region" v-bind:class="[color, {bounded:isBounded}, size]" v-on:click="isBounded=!isBounded"></div>
+        <input type="text" v-model="color">
+        <input type="text" v-model="size">
+
+        <br>
+        <p>--------------------------------------------------------------------------------------------------------------------</p>
+        <div class="region" v-bind:style="{
+                'background-color': color,
+                height: height + 'px',
+                width: width + 'px',
+            }"></div>
+        <input type="text" v-model="color">
+        <input type="number" v-model="height">
+        <input type="number" v-model="width">
+
+        <br>
+        <p>--------------------------------------------------------------------------------------------------------------------</p>
+
+        <div class="region" v-bind:style="[colorStyle, sizeStyle]"></div>
+        <input type="text" v-model="color">
+        <input type="number" v-model="height">
+        <input type="number" v-model="width">
+
+        <br>
+        <p>--------------------------------------------------------------------------------------------------------------------</p>
+
+        <div>
+
+            <p>
+                <input type="text" v-model="newPhone">
+                <button v-on:click="addNewPhone(newPhone)">Добавить</button>
+                <button v-on:click="addNewPhone(newPhone)">Добавить через VUE</button>
+            </p>
+            <ul>
+                <li v-for="(phone,index) in phones">
+                    <p>{{ phone }}
+                        <button @click="phones.splice(index,1)">X</button>
+                    </p>
+
+                </li>
+            </ul>
+        </div>
+
+        <br>
+        <p>--------------------------------------------------------------------------------------------------------------------</p>
+        <div>
+            <input type="text" v-model='query'>
+            <ul>
+                <li v-for="(phone, index) in filtredPhones">
+                    <p>
+                        {{ phone.name }} - {{phone.price}} {{phone.counter}}
+                        <button @click="update(index)">Обновить</button>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        let app = new Vue({
+            el: "#app",
+            data: {
+                isActive: false,
+                isBounded: false,
+                color: "",
+                size: "",
+                isBounded: false,
+                height: 0,
+                width: 0,
+                newPhone: '',
+                phones: [
+                    'iPhone', 'Nokia', 'Samsung', 'Xiaomi'
+                ],
+                query: '',
+                objPhones: [{
+                    name: 'iPhone 10',
+                    price: 123
+                }, {
+                    name: 'iPhone 11',
+                    price: 1230
+                }, {
+                    name: 'iPhone 9',
+                    price: 999
+                }, {
+                    name: 'iPhone 8',
+                    price: 1111
+                }]
+
+            },
+            computed: {
+                classObj() {
+                    return {
+                        active: this.isActive,
+                        bounded: this.isBounded
+                    }
+                },
+                sizeStyle() {
+                    return {
+                        height: this.height + 'px',
+                        width: this.width + 'px',
+                    }
+                },
+                colorStyle() {
+                    return {
+                        'background-color': this.color
+                    }
+                },
+                filtredPhones() {
+                    let arr = [];
+                    let regExp = new RegExp(".*" + this.query + ".*", "i")
+                    for (let i = 0; i < this.objPhones.length; i++) {
+                        if (regExp.test(this.objPhones[i].name)) {
+                            arr.push(this.objPhones[i])
+                        }
+                    }
+                    return arr;
+                }
+            },
+            methods: {
+                addNewPhone(namePhone) {
+                    this.phones.push(namePhone);
+                },
+                addNewPhoneVUE(namePhone) {
+                    let newIndex = this.phones.length;
+                    Vue.set(this.phones, newIndex, namePhone);
+                },
+                update(index) {
+                    Vue.set(this.objPhones[index], 'counter', 1);
+                }
+            }
+
+        });
+    </script>
+</body>
+
+</html>
