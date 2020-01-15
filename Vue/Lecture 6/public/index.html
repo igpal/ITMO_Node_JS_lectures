@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router@3.1.4/dist/vue-router.js"></script>
+    <style>
+        .active {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <ul>
+            <li>
+                <router-link to="/" exact active-class="active" tag="div">Домой</router-link>
+            </li>
+            <li>
+                <router-link to="/about" active-class="active" tag="div">О нас</router-link>
+            </li>
+            <li>
+                <router-link to="/err" active-class="active" tag="div">Битая</router-link>
+            </li>
+            <li>
+                <router-link to="/products" active-class="active" tag="div">Продукты</router-link>
+            </li>
+            <li>
+                <router-link :to="{ 
+                    name: 'objproducts',
+                    params: {
+                        id: 100
+                    }
+                }" active-class="active">Продукт 100</router-link>
+            </li>
+
+        </ul>
+        <router-view name="header"></router-view>
+        <router-view></router-view>
+    </div>
+
+    <script>
+        const MainHeader = {
+            template: `<h1>
+                Банер
+            </h1>`
+        }
+
+        const NotFound = {
+            template: '<H2>Страница отсутствует</H2>'
+        };
+        const Home = {
+            template: '<H2>Домашняя страница</H2>'
+        };
+        const About = {
+            template: '<H2>О нас</H2>'
+        };
+        const Products = {
+            template: `<div>
+                <h2>Список товаров</h2>
+                <router-view></router-view>
+            </div>`
+        };
+        const Products2 = {
+            template: `<div>
+                <h2>Товар {{$route.params.id}}</h2>
+                
+            </div>`
+        };
+        const Index = {
+            template: `<div>
+                <h3>Выберете категорию</h3>
+                <li><router-link
+                to="/products/phones"
+                active-class="active"
+                >Телефоны</router-link></li>
+                <li><router-link
+                    to="/products/tablets"
+                    active-class="active"
+                    >Планшеты</router-link></li>
+            </div>`
+        };
+
+        const Tablets = {
+            template: `<div>
+                <h2>Планшеты</h2>
+            </div>`
+        };
+
+        const Phones = {
+            template: `<div>
+                <h2>Телефоны</h2>
+            </div>`
+        };
+
+        const routes = [{
+            path: '/',
+            component: Home
+        }, {
+            path: '/about',
+            component: About
+        }, {
+            path: '*',
+            component: NotFound
+        }, {
+            path: '/products',
+            component: Products,
+            children: [{
+                path: 'phones',
+                component: Phones
+            }, {
+                path: 'tablets',
+                component: Tablets
+            }, {
+                path: '',
+                component: Index
+            }, {
+                path: '/objproducts/:id',
+                component: Products2,
+                name: 'objproducts'
+            }]
+        }];
+
+        const router = new VueRouter({
+            mode: 'history',
+            routes: routes
+        });
+
+        const app = new Vue({
+            el: "#app",
+            router: router,
+            data: {
+
+
+            },
+            computed: {
+
+            },
+            methods: {
+
+            },
+            components: {
+
+            }
+
+        });
+    </script>
+</body>
+
+</html>
