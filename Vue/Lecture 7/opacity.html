@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <style>
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity .5s;
+        }
+        
+        .fade-enter,
+        .fade-leave-to {
+            opacity: 0;
+        }
+        
+        .fade-enter-to,
+        .fade-leave {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="show=!show">Переключить</button>
+        <transition name="fade">
+            <p v-if="show">
+                Привет
+            </p>
+        </transition>
+
+
+    </div>
+    <script>
+        let app = new Vue({
+            el: "#app",
+            data: {
+                show: true,
+            }
+        });
+    </script>
+</body>
+
+</html>
