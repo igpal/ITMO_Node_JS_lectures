@@ -1,0 +1,165 @@
+<htm>
+
+    <head>
+
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E=" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+        <!-- CUSTOMIZE -->
+        <link rel="stylesheet" href="css/main.css">
+        <!--<script src="js/script.js"></script>-->
+
+        <!--VUE-->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/vue-router@3.1.4/dist/vue-router.js"></script>
+
+
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="todolist not-done">
+                        <h1>Активные задачи</h1>
+                        <input type="text" class="form-control mt-2" v-model="item.name" placeholder="Имя задачи">
+                        <input type="text" class="form-control my-2" v-model="item.description" placeholder="Описание задачи">
+                        <input type="date" class="form-control mb-2" v-model="item.dateStart" placeholder="Дата задачи">
+
+                        <button @click="addNewToDoItem()" class="btn btn-success">Добавить задачу</button>
+
+                        <hr>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">№</th>
+                                    <th scope="col">Дата</th>
+                                    <th scope="col">Название</th>
+                                    <th scope="col">Описание</th>
+                                    <th scope="col"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <transition-group name="flip-list">
+                                    <tr v-for="(item,index) in getActive" :key="index">
+                                        <td>
+                                            {{index+1}}
+                                        </td>
+                                        <td>
+                                            {{item.dateStart}}
+                                        </td>
+                                        <td>
+                                            {{item.name}}
+                                        </td>
+                                        <td>
+                                            {{item.description}}
+                                        </td>
+                                        <td>
+                                            <button class="btn-danger" @click="item.finish();setLocalStorage();">X</button>
+                                        </td>
+                                    </tr>
+                                </transition-group>
+
+
+                        </table>
+
+                        <ul id="sortable" class="list-unstyled">
+                            <li class="ui-state-default" v-for="item in getActive">
+
+                            </li>
+                        </ul>
+                        <div class="todo-footer">
+                            <strong><span class="count-todos">{{getActive.length}}</span></strong>&nbsp;активных задач
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="todolist">
+                        <h1>Завершенные задачи</h1>
+                        <ul id="done-items" class="list-unstyled">
+                            <li v-for="item in getFinished">{{item.name}}</li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            class ToDoItem {
+                constructor(name, description, dateStart, status = false) {
+                    this.name = name;
+                    this.description = description;
+                    this.dateStart = dateStart;
+                    this.status = status;
+                }
+
+                finish() {
+                    this.status = true;
+                }
+
+            }
+
+
+
+            const app = new Vue({
+                el: ".container",
+                data: {
+                    toDoList: [],
+                    item: {
+                        name: '',
+                        description: '',
+                        dateStart: '',
+                        status: false,
+                    },
+
+                },
+                methods: {
+                    addNewToDoItem() {
+                        this.toDoList.push(new ToDoItem(this.item.name, this.item.description, this.item.dateStart));
+                    },
+                    setLocalStorage() {
+                        let arr = [];
+                        this.toDoList.forEach(el => arr.push(el));
+                        localStorage.setItem('toDoItemList', JSON.stringify(arr));
+                    }
+                },
+                computed: {
+                    getFinished: function() {
+                        return this.toDoList.filter((el) => (el.status));
+                    },
+                    getActive: function() {
+                        return this.toDoList.filter((el) => (!el.status));
+                    }
+                },
+                watch: {
+                    toDoList(oldValue, newValue) {
+                        this.setLocalStorage();
+                    },
+
+                },
+                created() {
+                    let locStorage = localStorage.getItem('toDoItemList');
+                    if (locStorage) {
+                        let objLocalStorage = JSON.parse(locStorage);
+                        /*for (let i = 0; i < objLocalStorage.length; i++) {
+                            this.toDoList.push(new ToDoItem(objLocalStorage[i[]]));
+                        }*/
+                        objLocalStorage.forEach(el => console.log(el));
+
+                        objLocalStorage.forEach(el => this.toDoList.push(new ToDoItem(el.name, el.description, el.dateStart, el.status)));
+
+                    }
+
+                }
+            });
+        </script>
+    </body>
+
+
+</htm>

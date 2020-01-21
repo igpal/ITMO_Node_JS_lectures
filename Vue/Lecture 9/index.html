@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuex"></script>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="increment">+</button>
+        <button @click="decrement">-</button>
+        <counter></counter>
+    </div>
+    <script>
+        const storeVuex = new Vuex.Store({
+            state: {
+                count: 0
+            },
+            mutations: {
+                increment(state) {
+                    state.count++;
+                },
+                decrement(state) {
+                    state.count--;
+                }
+            }
+        });
+
+
+        const Counter = {
+            template: `<div>{{count}}</div>`,
+            data: function() {
+                return {
+                    localCount: 5
+                }
+            },
+            computed: Vuex.mapState(['count'])
+                /*computed: Vuex.mapState({ // альтернативный синстаксис
+                    count: function(state) {
+                        return state.count + this.localCount;
+                    }
+                })
+                */
+
+            /*{// классический синтаксис
+                count() {
+                    return this.$store.state.count;
+                }
+            }*/
+        }
+
+        let app = new Vue({
+            el: "#app",
+            store: storeVuex,
+            components: {
+                'counter': Counter
+            },
+            methods: {
+                increment() { //действия
+                    this.$store.commit("increment");
+                },
+                decrement() {
+                    this.$store.commit("decrement");
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
